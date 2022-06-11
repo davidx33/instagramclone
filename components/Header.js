@@ -13,7 +13,8 @@ import Home from '../pages';
 
 function Header() {
   return (
-    <div>
+    <div className='shadow-sm border-b bg-white sticky top-0
+    z-50'>
         <div className= "flex justify-between max-w-6xl mx-5 xl:mx-auto">
         <div className='relative hidden lg:inline-grid w-24
         cursor-pointer'>
@@ -44,10 +45,25 @@ function Header() {
         </div>
         </div>
         <div className='flex items-center justify-end space-x-4'>
-        <HomeIcon className='h-10 w-10'/>
+        <HomeIcon className='navBtn'/>
         <MenuIcon className='h-6 md:hidden cursor-pointer'/>
 
-        <PaperAirplaneIcon className='h-10 w-10' />
+        <div className='relative navBtn'>
+            <PaperAirplaneIcon className='navBtn rotate-45' />
+            <div className='absolute -top-1 -right-3 text-xs
+            w-5 h-5 bg-red-500 rounded-full flex items-center justify-center
+            animate-pulse text-white'>
+                3
+            </div>
+        </div>
+
+        {/* <PaperAirplaneIcon className='navBtn'/> */}
+        <PlusCircleIcon className='navBtn'/>
+        <UserGroupIcon className='navBtn' />
+        <HeartIcon className='navBtn'/>
+
+        <img src= "JeremyLin.png" alt = "profile pic"
+        className='h-10 rounded-full cursor-pointer'/>
         </div>
         </div>
     </div>
