@@ -1,7 +1,7 @@
 import React from 'react'
 import Post from './Post'
 
-const DUMMY_DATA = [
+const posts = [
     {
         id: '123', 
         username: "davidxu33",
@@ -14,6 +14,17 @@ const DUMMY_DATA = [
 function Posts() {
   return (
     <div>
+        {posts.map((post) => (
+            <Post 
+            key = {post.id} 
+            id = {post.id}
+            username = {post.username}
+            userimg = {post.userimg}
+            img = {post.img}
+            caption = {post.caption}
+                />
+
+        ))}
         <Post/>
         <Post/>
         <Post/>

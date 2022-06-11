@@ -1,6 +1,10 @@
 import React from 'react'
 import Stories from './Stories'
 import Posts from './Posts'
+import MiniProfile from './MiniProfile'
+import Suggestions from './Suggestions'
+
+
 // Structure:
 
 // On the left, have the stories and the posts, stories at the top
@@ -15,7 +19,11 @@ function Feed() {
             <Posts />
         </section>
 
-        <section>
+        <section className='hidden xl:inline-grid md:'>
+            {/* Profile and suggestions section */}
+
+            <MiniProfile />
+            <Suggestions />
 
         </section>
 
