@@ -12,10 +12,13 @@ import { HomeIcon } from "@heroicons/react/solid";
 import Home from '../pages';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useRecoilState } from 'recoil';
+import { modalState } from '../atoms/modalAtom';
 
 function Header() {
     const { data: session } = useSession();
     // use router with nextjs instead of href to direct users via buttons
+    const [open, setOpen] = useRecoilState(modalState);
     const router = useRouter();
 
 
@@ -65,14 +68,14 @@ function Header() {
                 3
             </div>
             </div>
-        <PlusCircleIcon className='navBtn'/>
+        <PlusCircleIcon onClick={() => setOpen(true)} className='navBtn'/>
         <UserGroupIcon className='navBtn' />
         <HeartIcon className='navBtn'/>
 
         <img 
         onClick={signOut}
         src= {session?.user?.image} 
-        alt = "profile pic"
+        alt = ""
         className='h-10 w-10 rounded-full cursor-pointer'/>
         </>
         ) : (

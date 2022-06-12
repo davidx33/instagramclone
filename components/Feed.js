@@ -26,7 +26,6 @@ function Feed() {
 
         {session && (
             <section className='hidden xl:inline-grid md:'>
-            {/* Profile and suggestions section */}
         <div className='fixed'>
             <MiniProfile />
             <Suggestions />
