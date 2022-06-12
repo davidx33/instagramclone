@@ -10,13 +10,20 @@ import {
 } from "@heroicons/react/outline";
 import { HomeIcon } from "@heroicons/react/solid";
 import Home from '../pages';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 function Header() {
+    const { data: session } = useSession();
+    // use router with nextjs instead of href to direct users via buttons
+    const router = useRouter();
+
+
   return (
     <div className='shadow-sm border-b bg-white sticky top-0
     z-50'>
         <div className= "flex justify-between max-w-6xl mx-5 xl:mx-auto">
-        <div className='relative hidden lg:inline-grid w-24
+        <div onClick={() => router.push("/")} className='relative hidden lg:inline-grid w-24
         cursor-pointer'>
             <Image
             src = 'https://links.papareact.com/ocw' 
@@ -25,7 +32,7 @@ function Header() {
             />
         </div>
 
-        <div className='relative w-10 lg:hidden flex-shrink-0
+        <div onClick= {() => router.push("/")} className='relative w-10 lg:hidden flex-shrink-0
         cursor-pointer'>
         <Image
             src = 'https://links.papareact.com/jjm' 
@@ -45,25 +52,32 @@ function Header() {
         </div>
         </div>
         <div className='flex items-center justify-end space-x-4'>
-        <HomeIcon className='navBtn'/>
+        <HomeIcon onClick = {() => router.push("/")} className='navBtn'/>
         <MenuIcon className='h-6 md:hidden cursor-pointer'/>
-
-        <div className='relative navBtn'>
+    
+        {session ? (
+        <>
+            <div className='relative navBtn'>
             <PaperAirplaneIcon className='navBtn rotate-45' />
             <div className='absolute -top-1 -right-3 text-xs
             w-5 h-5 bg-red-500 rounded-full flex items-center justify-center
             animate-pulse text-white'>
                 3
             </div>
-        </div>
-
-        {/* <PaperAirplaneIcon className='navBtn'/> */}
+            </div>
         <PlusCircleIcon className='navBtn'/>
         <UserGroupIcon className='navBtn' />
         <HeartIcon className='navBtn'/>
 
-        <img src= "JeremyLin.png" alt = "profile pic"
-        className='h-10 rounded-full cursor-pointer'/>
+        <img 
+        onClick={signOut}
+        src= {session?.user?.image} 
+        alt = "profile pic"
+        className='h-10 w-10 rounded-full cursor-pointer'/>
+        </>
+        ) : (
+            <button onClick={signIn}>Sign In</button>
+        )} 
         </div>
         </div>
     </div>
