@@ -1,4 +1,4 @@
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useSession } from 'next-auth/react'
 import React from 'react'
 import { db } from '../firebase';
@@ -18,28 +18,29 @@ function Posts() {
     const [posts, setPosts] = React.useState([]);
 
     React.useEffect(() => {
-        onSnapshot(collection(db, ))
+        const unsubscribe = onSnapshot(query(collection(db, 'posts'), orderBy('timestamp',
+        'desc')), snapshot => { 
+            setPosts(snapshot.docs)
+        });
 
-    })
+        return unsubscribe;
+
+    }, [db])
+     
   return (
     <div>
         {posts.map((post) => (
             <Post 
             key = {post.id} 
             id = {post.id}
-            username = {post.username}
-            userimg = {post.userimg}
-            img = {post.img}
-            caption = {post.caption}
+            username = {post.data().username}
+            userimg = {post.data().profileImg}
+            img = {post.data().image }
+            caption = {post.data().caption}
                 />
 
         ))}
-        <Post/>
-        <Post/>
-        <Post/>
-        <Post/>
-        <Post/>
-        <Post/>
+
     </div>
   )
 }
