@@ -3,9 +3,44 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../atoms/modalAtom';
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from 'react';
+import { CameraIcon } from '@heroicons/react/outline';
+import { useRef } from 'react';
+// import { async } from '@firebase/util';
+import { db, storage } from "../firebase"
 
 function Modal() {
     const [open, setOpen] = useRecoilState(modalState);
+    const filePickerRef = useRef(null);
+    const captionRef = useRef(null)
+    const [loading, setLoading] = React.useState(false);  
+    const [selectedFile, setSelectedFile] = React.useState(null);
+
+    const uploadPost = async () => {
+        if (loading) return;
+        setLoading(true)
+
+        // Create a post and add to firestore posts collection
+        // get the post id back for new post
+        // upload the image to firebase storage with post ID
+        // get download URL from firebase storage, upload to original post w img
+
+        const docRef = await 
+
+
+
+    }
+
+    const addImageToPost = (e) => {
+        const reader = new FileReader();
+        if (e.target.files[0]) {
+            reader.readAsDataURL(e.target.files[0]);
+        }
+        reader.onload = (readerEvent) => {
+            setSelectedFile(readerEvent.target.result)
+        };
+    };
+
+    // input field is hidden
   return  <Transition.Root show={open} as={Fragment}>
         <Dialog
         as= "div"
@@ -45,7 +80,52 @@ function Modal() {
                 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all
                 sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6'>
 
-                    <div className='mt-5 sm:mt-6'>
+                    {selectedFile ? (
+                     
+                    <img src = {selectedFile} 
+                    className='w-full object-contain cursor-pointer'
+                    onClick={() => setSelectedFile(null)}
+                    alt="" />
+
+                    ): (
+
+                <div
+                onClick={() => filePickerRef.current.click()}
+                className='mx-auto flex items-center justify-center h-12 w-12
+                rounded-full bg-red-100 cursor-pointer'>
+                    <CameraIcon
+                        className='h-6 w-6 text-red-600'
+                        aria-hidden="true"/>
+                </div>
+
+
+                    )}  
+              
+                <div>
+                <div className='mt-3 text-center sm:mt-5'>
+                        <Dialog.Title as="h3"
+                        className="text-lg leading-6 font-medium text-gray-900">
+                            Upload a Photo
+                        </Dialog.Title>
+
+                        <div>
+                        <input type="file" hidden
+                        ref={filePickerRef} 
+                        onChange={addImageToPost}/>
+                        </div>
+
+                        <div className='mt-2'>
+                            <input className='border-none focus:ring-0 w-full text-center'
+                            type="text"
+                            ref={captionRef}
+                            placeholder='"Please enter a caption...' />
+                        </div>
+                    </div>
+                </div>
+
+                    <div>
+
+                        <div className='mt-5 sm:mt-6'>
                         
                         <button 
                         type="button"
@@ -60,7 +140,7 @@ function Modal() {
                         >
                             Upload Post
                         </button>
-
+                    </div>
                     </div>
                 </div>
             </Transition.Child>
