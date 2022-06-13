@@ -2,7 +2,6 @@
 import { getProviders, signIn as SignIntoProvider } from "next-auth/react"
 import React from 'react'
 import Header from '../../components/Header'
-import Image from 'next/image'
 
 function signIn({ providers }) {
     return (
@@ -10,7 +9,7 @@ function signIn({ providers }) {
     <Header />
     <div className='flex flex-col items-center 
     justify-center min-h-screen py-2 px-14 text-center'>
-        <Image
+        <img
         className='w-80'
         src = "https://links.papareact.com/ocw" 
         alt = ""/>
