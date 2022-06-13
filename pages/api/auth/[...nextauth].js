@@ -12,7 +12,7 @@ export default NextAuth({
 // add more providers here
     ],
     secret: process.env.NEXT_PUBLIC_SECRET,
-    
+
     pages: {
         signIn: "/auth/signin",
         
@@ -24,7 +24,7 @@ export default NextAuth({
             .join("")
             .toLocaleLowerCase();
             // from David Xu -> DavidXu -> davidxu
-            session.user.uid = token.sub
+            session.user.uid = user.uid
             // sub is th e user id that comes back from Google
             return session;
         },
