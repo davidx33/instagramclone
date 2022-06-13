@@ -11,7 +11,7 @@ import {
 import { HeartIcon as HeartIconFilled } from 
 "@heroicons/react/solid";
 import { useSession } from 'next-auth/react';
-import { addDoc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
+import { addDoc, deleteDoc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
 import { collection } from 'firebase/firestore';
 import { db, storage } from "../firebase"
 import Moment from 'react-moment';
@@ -23,6 +23,7 @@ function Post({ id, username, userimg, img, caption }) {
     const [comment, setComment] = useState("");
     const [comments, setComments] = useState([]);
     const [likes, setLikes] = useState([]);
+    const [hasLiked, setHasLiked] = useState(false);
 
 
     React.useEffect(() => 
@@ -36,13 +37,29 @@ function Post({ id, username, userimg, img, caption }) {
         []
     );
 
+    // this useEffect will track whether you have liked or not
+    React.useEffect( 
+        () => 
+        setHasLiked(
+            likes.findIndex((like) => like.id === session?.user?.uid)
+            !== -1
+   ), [likes]);
+
+
     const likePost = async () => {
-        await setDoc(doc(db, 'posts', id, 'likes',
+        if (hasLiked) {
+            // unlike functionality
+            await deleteDoc(doc(db, 'posts', id, 'likes', session.user.uid));
+        }
+        else {
+            // when you like it, put info into the database
+            await setDoc(doc(db, 'posts', id, 'likes',
         session.user.uid), {
             username: session.user.username,
-        })
+        });
+        }
+    };
 
-    }
 
     const sendComment = async (e) => {
         e.preventDefault();
@@ -76,7 +93,16 @@ function Post({ id, username, userimg, img, caption }) {
 {session && (
     <div className='flex justify-between px-4 pt-4 pb-4'>
     <div className='flex space-x-4'>
-        <HeartIcon onClick={likePost} className='btn'/>
+        {
+            hasLiked ? (
+                <HeartIconFilled onClick={likePost} className='btn text-red-500'/>  
+            ):
+            (
+                <HeartIcon onClick={likePost} className='btn'/>
+            )
+        }
+
+        {/* <HeartIcon onClick={likePost} className='btn'/> */}
         <ChatIcon className='btn'/>
         <PaperAirplaneIcon className='btn'/>
     </div>
@@ -86,6 +112,10 @@ function Post({ id, username, userimg, img, caption }) {
     
     <div>
         <p className='p-5 truncate'>
+
+            {likes.length > 0 && (
+                <p className='font-bold'>{likes.length} likes</p>
+            )}
             <span className='font-bold mr-2'>
                 {username}
             </span>
