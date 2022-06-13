@@ -13,7 +13,7 @@ import Home from '../pages';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
-import { modalState } from '../atoms/modalAtom';
+import { modalState } from '../atom/modalAtom';
 
 function Header() {
     const { data: session } = useSession();
