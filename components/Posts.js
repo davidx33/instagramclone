@@ -1,4 +1,7 @@
+import { collection, onSnapshot } from 'firebase/firestore';
+import { useSession } from 'next-auth/react'
 import React from 'react'
+import { db } from '../firebase';
 import Post from './Post'
 
 const posts = [
@@ -12,6 +15,12 @@ const posts = [
 
 ]
 function Posts() {
+    const [posts, setPosts] = React.useState([]);
+
+    React.useEffect(() => {
+        onSnapshot(collection(db, ))
+
+    })
   return (
     <div>
         {posts.map((post) => (

@@ -7,8 +7,12 @@ import { CameraIcon } from '@heroicons/react/outline';
 import { useRef } from 'react';
 // import { async } from '@firebase/util';
 import { db, storage } from "../firebase"
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { useSession } from 'next-auth/react';
+import { ref, getDownloadURL, uploadString } from 'firebase/storage';
 
 function Modal() {
+    const { data: session } = useSession();
     const [open, setOpen] = useRecoilState(modalState);
     const filePickerRef = useRef(null);
     const captionRef = useRef(null)
@@ -24,10 +28,31 @@ function Modal() {
         // upload the image to firebase storage with post ID
         // get download URL from firebase storage, upload to original post w img
 
-        const docRef = await 
+        const docRef = await addDoc(collection(db, 'posts'), {
+            username: session.user.username,
+            caption: captionRef.current.value,
+            profileImg: session.user.image,
+            timestamp: serverTimestamp()
 
+        })
+        // add doc new firebase v9 feature, collection a helper
+        const imageRef = ref(storage, `posts/${docRef.id}/image`)
+        // now have a reference to what we want to upload
 
+        await uploadString(imageRef, selectedFile, "data_url").then(async snapshot => {
+            const downloadURL = await getDownloadURL(imageRef);
 
+            await updateDoc(doc(db, 'posts', docRef.id), {
+                image: downloadURL
+            })
+        });
+
+        setOpen(false);
+        setLoading(false);
+        setSelectedFile(null);
+
+        // should now upload to firestore, then to firebase storage, then back to 
+        // firestore with updated image, download URL
     }
 
     const addImageToPost = (e) => {
@@ -135,10 +160,10 @@ function Modal() {
                         hover:bg-red-700 focus:outline-none 
                         focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm
                         disabled:bg-gray-300 disabled:cursor-not-allowed 
-                        hover:disabled:bg-gray-300
-                        '
+                        hover:disabled:bg-gray-300'
+                        onClick={uploadPost}
                         >
-                            Upload Post
+                            {loading ? "Uploading..." : "Upload"}
                         </button>
                     </div>
                     </div>
